@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Application context definition for JPetStore's business layer.
+  - Contains bean references to the transaction manager and to the DAOs in
+  - dataAccessContext-local/jta.xml (see web.xml's "contextConfigLocation").
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"		
+        xmlns:jaxws="http://cxf.apache.org/jaxws"   
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+			http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+
+  <bean id="baseServ" abstract="true" class="com.wlnet.server.common.BaseServ">
+    <property name="dataSource" ref="dataSource"/>  
+    <property name="jt" ref="jdbcTemplate"/>  
+  </bean>
+  
+	<bean id="znServ" parent="baseServ" class=" com.wlnet.server.buz.ZNServ">
+	  </bean>
+        	
+    <bean id="znDevServer" class="com.wlnet.server.udp.ZNDevServer">
+    	<property name="buzServ" ref="znServ"/>
+  		<property name="devServerPort" >
+        	<value>${port.devserver}</value>
+        </property>
+    </bean>
+    
+    <bean id="znMobileServer" class="com.wlnet.server.udp.ZNMobileServer">
+    	<property name="buzServ" ref="znServ"/>
+  		<property name="mobileServerPort" >
+        	<value>${port.mobileserver}</value>
+        </property>
+    </bean>   
+    
+    <bean id="znMobileTcpServer" class="com.wlnet.server.tcp.mobile.ZNMobileTcpServer">
+    	<property name="buzServ" ref="znServ"/>
+  		<property name="mobileTcpServerPort" >
+        	<value>${port.mobiletcp}</value>
+        </property>
+    </bean>  
+         
+    <bean id="devTcpServer" class="com.wlnet.server.tcp.dev.DevTcpServer">
+    	<property name="buzServ" ref="znServ"/>
+  		<property name="tcpServerPort" >
+        	<value>${port.devtcpserver}</value>
+        </property>
+    </bean>  
+       	
+</beans>
